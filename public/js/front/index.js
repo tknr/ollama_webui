@@ -1,8 +1,35 @@
 $(document).ready(function () {
-    $.getJSON("/ollama/", function (data) {
-        console.log(data);
-        $('#test').text(data);
+    let lastResponseLength = false;
+    let ajaxRequest = $.ajax({
+        type: 'get',
+        url: '/ollama/',
+        data: {},
+        dataType: 'json',
+        processData: false,
+        xhrFields: {
+            // Getting on progress streaming response
+            onprogress: function(e)
+            {
+                console.log(e)
+                let response = e.currentTarget.response;
+                console.log(response)
+                $('#test').text(response);
+            }
+        }
     });
+
+    // On completed
+    ajaxRequest.done(function(data)
+    {
+        console.log('Complete response = ' + data);
+    });
+
+    // On failed
+    ajaxRequest.fail(function(error){
+        console.log('Error: ', error);
+    });
+
+    console.log('Request Sent');
 });
 
 
