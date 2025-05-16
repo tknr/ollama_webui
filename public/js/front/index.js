@@ -1,34 +1,71 @@
 
 const Ollama = window.OllamaJS;
-const ollama_instance = new Ollama({
-    model: "phi4",
-    url: "/ollama/api/",
-});
 
+const $model = $("#model");
 const $input = $('#input');
 const $output = $('#output');
 
-const on_response = (error, response) => {
-    if (error) {
-        console.error(error)
-    }
+let ollama_instance;
 
-    else if (response.done) {
-        // done!
-    }
-    else {
-        console.log(response);
-        $output.text($output.text() + response.response);
-    }
-}
+$(function () {
+    console.log("ready");
+    getModels();
+    renderPromptStream();
 
-$input.on("keyup", async (event) => {
-    if (event.key === "Enter") {
-        await ollama_instance.prompt_stream($input.val(), on_response)
-        $input.val("")
-    }
 });
 
+function getModels() {
+    console.log("getModels");
+    $.ajax({
+        type: "GET",
+        url: '/ollama/v1/models',
+        dataType: "json"
+    })
+        .done(function (json) {
+            console.log(json);
+            const models = json.data;
+            $model.empty();
+            models.forEach(function (model) {
+                console.log(model);
+                $option = $('<option>')
+                    .val(model.id.split(':')[0])
+                    .text(model.id.split(':')[0]);
+                $model.append($option);
+            });
+        })
+        .fail(function () {
+            console.log("ajax fail");
+        });
+}
+
+function renderPromptStream() {
+    const on_response = (error, response) => {
+        if (error) {
+            console.error(error)
+        }
+
+        else if (response.done) {
+            console.log('response.done:' + response.done);
+        }
+        else {
+            console.log(response);
+            $output.text($output.text() + response.response.replace('\n', '<br />'));
+        }
+    }
+
+    $input.on("keyup", async (event) => {
+        if (event.key === "Enter") {
+            if (ollama_instance == null) {
+                ollama_instance = new Ollama({
+                    model: $('[name=model]').val(),
+                    url: "/ollama/api/",
+                });
+            }
+            await ollama_instance.prompt_stream($input.val(), on_response)
+            $input.val("")
+        }
+    });
+}
 
 
 
