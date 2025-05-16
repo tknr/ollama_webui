@@ -1,36 +1,35 @@
-$(document).ready(function () {
-    let lastResponseLength = false;
-    let ajaxRequest = $.ajax({
-        type: 'get',
-        url: '/ollama/',
-        data: {},
-        dataType: 'json',
-        processData: false,
-        xhrFields: {
-            // Getting on progress streaming response
-            onprogress: function(e)
-            {
-                console.log(e)
-                let response = e.currentTarget.response;
-                console.log(response)
-                $('#test').text(response);
-            }
-        }
-    });
 
-    // On completed
-    ajaxRequest.done(function(data)
-    {
-        console.log('Complete response = ' + data);
-    });
-
-    // On failed
-    ajaxRequest.fail(function(error){
-        console.log('Error: ', error);
-    });
-
-    console.log('Request Sent');
+const Ollama = window.OllamaJS;
+const ollama_instance = new Ollama({
+    model: "phi4",
+    url: "/ollama/api/",
 });
+
+const $input = $('#input');
+const $output = $('#output');
+
+const on_response = (error, response) => {
+    if (error) {
+        console.error(error)
+    }
+
+    else if (response.done) {
+        // done!
+    }
+    else {
+        console.log(response);
+        $output.text($output.text() + response.response);
+    }
+}
+
+$input.on("keyup", async (event) => {
+    if (event.key === "Enter") {
+        await ollama_instance.prompt_stream($input.val(), on_response)
+        $input.val("")
+    }
+});
+
+
 
 
 /**
