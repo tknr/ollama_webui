@@ -3,7 +3,9 @@ const Ollama = window.OllamaJS;
 
 const $model = $("#model");
 const $input = $('#input');
+const $send = $('#send');
 const $output = $('#output');
+
 
 let ollama_instance;
 
@@ -14,6 +16,9 @@ $(function () {
 
 });
 
+/**
+ * @return void
+ */
 function getModels() {
     console.log("getModels");
     $.ajax({
@@ -38,6 +43,9 @@ function getModels() {
         });
 }
 
+/**
+ * @return void
+ */
 function renderPromptStream() {
     const on_response = (error, response) => {
         if (error) {
@@ -53,27 +61,14 @@ function renderPromptStream() {
         }
     }
 
-    $input.on("keyup", async (event) => {
-        if (event.key === "Enter") {
-            if (ollama_instance == null) {
-                ollama_instance = new Ollama({
-                    model: $('[name=model]').val(),
-                    url: "/ollama/api/",
-                });
-            }
-            await ollama_instance.prompt_stream($input.val(), on_response)
-            $input.val("")
+    $send.on("click", async (event) => {
+        if (ollama_instance == null) {
+            ollama_instance = new Ollama({
+                model: $('[name=model]').val(),
+                url: "/ollama/api/",
+            });
         }
+        await ollama_instance.prompt_stream($input.val(), on_response)
+        $input.val("")
     });
 }
-
-
-
-/**
- * [tknr@server ~]$ curl http://l.tknr.com/ollama/
-Ollama is running[tknr@server ~]$ curl http://l.tknr.com/ollama/v1/models
-{"object":"list","data":[{"id":"granite3-dense:latest","object":"model","created":1746602518,"owned_by":"library"},{"id":"codellama:latest","object":"model","created":1746174524,"owned_by":"library"},{"id":"phi4:latest","object":"model","created":1743577137,"owned_by":"library"}]}
-[tknr@server ~]$ curl https://s.tknr.com/ollama/v1/models
-{"object":"list","data":[{"id":"granite3-dense:latest","object":"model","created":1746602518,"owned_by":"library"},{"id":"codellama:latest","object":"model","created":1746174524,"owned_by":"library"},{"id":"phi4:latest","object":"model","created":1743577137,"owned_by":"library"}]}
-[tknr@server ~]$ 
- */
