@@ -57,7 +57,7 @@ function renderPromptStream() {
         }
         else {
             console.log(response);
-            $output.text($output.text() + response.response.replace('\n', '<br />'));
+            $output.html($output.html() + response.response.replace('\n', '<br />'));
         }
     }
 
