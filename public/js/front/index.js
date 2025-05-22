@@ -100,11 +100,14 @@ function renderPromptStream() {
  * @var string
  */
 const POST_RIGHT = `
+<div class="row">&nbsp;</div>
+<br />
 <div class="row border border-1 rounded float-end p-2" id="#ID#">
 #TEXT#
 </div>
+<br />
 <div class="row">&nbsp;</div>
-<div class="row">&nbsp;</div>
+<br />
 `;
 
 /**
@@ -112,9 +115,9 @@ const POST_RIGHT = `
  * @var string
  */
 const POST_LEFT = `
+<div class="row">&nbsp;</div><br />
 <div class="row border border-1 rounded flat-start p-2" id="#ID#">
 #TEXT#
-</div>
-<div class="row">&nbsp;</div>
-<div class="row">&nbsp;</div>
+</div><br />
+<div class="row">&nbsp;</div><br />
 `;
