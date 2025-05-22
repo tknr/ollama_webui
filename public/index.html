@@ -13,7 +13,6 @@
     <!-- Fonts -->
     <link rel="preconnect" href="//fonts.bunny.net">
     <link href="//fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-    <link href="./css/common/spinner.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -24,16 +23,15 @@
                 <select id="model" name="model" class="form-select" aria-label="model">
                 </select>
                 <textarea class="form-control" id="input"></textarea>
-                <button type="button" class="btn btn-primary" id="send">send</button>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-light btn-sm" id="send">send</button>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div id="output"></div>
-        </div>
-    </div>
-    <div id="overlay">
-        <div class="cv-spinner">
-            <span class="spinner"></span>
+            <div class="col">
+                <div id="output"></div>
+            </div>
         </div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -43,7 +41,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"
         integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="./js/common/spinner.js"></script>
     <script src="//cdn.jsdelivr.net/npm/ollama-js-client/dist/browser/iife/ollama-js.global.js"></script>
     <script type="module" src="//cdn.jsdelivr.net/npm/ollama-js-client/dist/browser/index.js"></script>
     <script src="./js/front/index.js"></script>
