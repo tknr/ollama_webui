@@ -21,9 +21,9 @@ $(function () {
  * @see https://stackoverflow.com/a/2117523/5584812
  */
 function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-    (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
-  );
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+    );
 }
 /**
  * @return void
@@ -64,6 +64,8 @@ function renderPromptStream() {
             ('#ID#', right_id)
             .replaceAll('#TEXT#', input_val)
         );
+        $('#' + right_id).autosize();
+        $('#' + right_id).trigger('autosize.resize');
         $input.val("");
 
         let left_id = uuidv4();
@@ -71,7 +73,7 @@ function renderPromptStream() {
             ('#ID#', left_id)
             .replaceAll('#TEXT#', '')
         );
-
+        $('#' + left_id).autosize();
         if (ollama_instance == null) {
             ollama_instance = new Ollama({
                 model: $('[name=model]').val(),
@@ -83,11 +85,12 @@ function renderPromptStream() {
                 console.error(error)
             }
             else if (response.done) {
-                console.log('response.done:' + response.done);
+                // console.log('response.done:' + response.done);
             }
             else {
-                console.log(response);
-                $('#' + left_id).html($('#' + left_id).html() + response.response.replace('\n', '<br />'));
+                // console.log(response);
+                $('#' + left_id).val($('#' + left_id).val() + response.response);
+                $('#' + left_id).trigger('autosize.resize');
             }
         });
 
@@ -102,8 +105,8 @@ function renderPromptStream() {
 const POST_RIGHT = `
 <div class="row">
     <div class="col-1">&nbsp;</div>
-    <div class="col-11 border border-1 rounded float-end p-2" id="#ID#">
-        #TEXT#
+    <div class="col-11 float-end p-2">
+        <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
     </div>
 </div>
 `;
@@ -114,8 +117,8 @@ const POST_RIGHT = `
  */
 const POST_LEFT = `
 <div class="row">
-    <div class="col-11 border border-1 rounded float-end p-2" id="#ID#">
-        #TEXT#
+    <div class="col-11 float-end p-2">
+        <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
     </div>
     <div class="col-1">&nbsp;</div>
 </div>
