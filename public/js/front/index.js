@@ -60,7 +60,7 @@ function renderPromptStream() {
     $send.on("click", async (event) => {
         let input_val = $input.val();
         let right_id = uuidv4();
-        $output.prepend(POST_RIGHT.replaceAll
+        $output.prepend(POST_YOU.replaceAll
             ('#ID#', right_id)
             .replaceAll('#TEXT#', input_val)
         );
@@ -69,7 +69,7 @@ function renderPromptStream() {
         $input.val("");
 
         let left_id = uuidv4();
-        $output.prepend(POST_LEFT.replaceAll
+        $output.prepend(POST_OLLAMA.replaceAll
             ('#ID#', left_id)
             .replaceAll('#TEXT#', '')
         );
@@ -98,28 +98,29 @@ function renderPromptStream() {
     });
 }
 
+
 /**
- * 右
+ * post : you
  * @var string
  */
-const POST_RIGHT = `
-<div class="row">
-    <div class="col-1">&nbsp;</div>
-    <div class="col-11 float-end p-2">
+const POST_YOU = `
+<div class="row py-1">
+    <div class="col float-end">
         <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
     </div>
+    <div class="col-auto text-center my-3"><i class="fa-solid fa-user fa-2xl"></i></div>
 </div>
 `;
 
 /**
- * 左
+ * post : ollama
  * @var string
  */
-const POST_LEFT = `
-<div class="row">
-    <div class="col-11 float-end p-2">
+const POST_OLLAMA = `
+<div class="row py-1">
+    <div class="col-auto text-center my-3"><i class="fa-solid fa-robot fa-2xl"></i></div>
+    <div class="col float-end">
         <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
     </div>
-    <div class="col-1">&nbsp;</div>
 </div>
 `;
