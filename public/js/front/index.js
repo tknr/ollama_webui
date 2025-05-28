@@ -10,10 +10,8 @@ const $output = $('#output');
 let ollama_instance;
 
 $(function () {
-    console.log("ready");
     getModels();
     renderPromptStream();
-
 });
 
 /**
@@ -29,34 +27,29 @@ function uuidv4() {
  * @return void
  */
 function getModels() {
-    console.log("getModels");
     $.ajax({
         type: "GET",
         url: '/ollama/v1/models',
         dataType: "json"
-    })
-        .done(function (json) {
-            console.log(json);
-            const models = json.data;
-            $model.empty();
-            models.forEach(function (model) {
-                console.log(model);
-                $option = $('<option>')
-                    .val(model.id.split(':')[0])
-                    .text(model.id.split(':')[0]);
-                $model.append($option);
-            });
-        })
-        .fail(function () {
-            console.log("ajax fail");
+    }).done(function (json, textStatus, jqXHR) {
+        console.log(json, textStatus, jqXHR);
+        $model.empty();
+        json.data.forEach(function (model) {
+            let model_name = model.id.split(':')[0];
+            $option = $('<option>')
+                .val(model_name)
+                .text(model_name);
+            $model.append($option);
         });
+    }).fail((jqXHR, textStatus, errorThrown) => {
+        console.error(jqXHR, textStatus, errorThrown);
+    });
 }
 
 /**
  * @return void
  */
 function renderPromptStream() {
-
     $send.on("click", async (event) => {
         let input_val = $input.val();
         let right_id = uuidv4();
@@ -80,7 +73,7 @@ function renderPromptStream() {
                 url: "/ollama/api/",
             });
         }
-        await ollama_instance.prompt_stream(input_val, function (error, response) {
+        ollama_instance.prompt_stream(input_val, function (error, response) {
             if (error) {
                 console.error(error)
             }
@@ -88,13 +81,11 @@ function renderPromptStream() {
                 // console.log('response.done:' + response.done);
             }
             else {
-                // console.log(response);
+                console.log(response);
                 $('#' + left_id).val($('#' + left_id).val() + response.response);
                 $('#' + left_id).trigger('autosize.resize');
             }
         });
-
-
     });
 }
 
