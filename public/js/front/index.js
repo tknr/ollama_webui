@@ -51,10 +51,12 @@ function getModels() {
  */
 function renderPromptStream() {
     $send.on("click", async (event) => {
+        let OLLAMA_MODEL = $('[name=model]').val();
+        
         let input_val = $input.val();
         let right_id = uuidv4();
-        $output.prepend(POST_YOU.replaceAll
-            ('#ID#', right_id)
+        $output.prepend(POST_YOU
+            .replaceAll('#ID#', right_id)
             .replaceAll('#TEXT#', input_val)
         );
         $('#' + right_id).autosize();
@@ -62,17 +64,17 @@ function renderPromptStream() {
         $input.val("");
 
         let left_id = uuidv4();
-        $output.prepend(POST_OLLAMA.replaceAll
-            ('#ID#', left_id)
+        $output.prepend(POST_OLLAMA
+            .replaceAll('#ID#', left_id)
+            .replaceAll('#MODEL#', OLLAMA_MODEL)
             .replaceAll('#TEXT#', '')
         );
         $('#' + left_id).autosize();
-        if (ollama_instance == null) {
-            ollama_instance = new Ollama({
-                model: $('[name=model]').val(),
-                url: "/ollama/api/",
-            });
-        }
+        
+        ollama_instance = new Ollama({
+            model: OLLAMA_MODEL,
+            url: "/ollama/api/",
+        });
         ollama_instance.prompt_stream(input_val, function (error, response) {
             if (error) {
                 console.error(error)
@@ -89,7 +91,6 @@ function renderPromptStream() {
     });
 }
 
-
 /**
  * post : you
  * @var string
@@ -97,7 +98,10 @@ function renderPromptStream() {
 const POST_YOU = `
 <div class="row py-1">
     <div class="col float-end">
-        <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
+        <div class="row">YOU</div>
+        <div clas="row">
+                <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
+        </div>
     </div>
     <div class="col-auto text-center my-3"><i class="fa-solid fa-user fa-2xl"></i></div>
 </div>
@@ -111,7 +115,11 @@ const POST_OLLAMA = `
 <div class="row py-1">
     <div class="col-auto text-center my-3"><i class="fa-solid fa-robot fa-2xl"></i></div>
     <div class="col float-end">
-        <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
+        <div class="row">#MODEL#</div>
+        <div class="row">
+                <textarea class="form-control" id="#ID#" rows="1" readonly>#TEXT#</textarea>
+        <div>
     </div>
 </div>
 `;
+
