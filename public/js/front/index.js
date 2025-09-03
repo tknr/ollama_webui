@@ -35,7 +35,7 @@ function getModels() {
         console.log(json, textStatus, jqXHR);
         $model.empty();
         json.data.forEach(function (model) {
-            let model_name = model.id.split(':')[0];
+            let model_name = model.id;
             $option = $('<option>')
                 .val(model_name)
                 .text(model_name);
@@ -54,6 +54,7 @@ function renderPromptStream() {
         let OLLAMA_MODEL = $('[name=model]').val();
         
         let input_val = $input.val();
+        // TDOD stack input_val to localstorage 
         let right_id = uuidv4();
         $output.prepend(POST_YOU
             .replaceAll('#ID#', right_id)
